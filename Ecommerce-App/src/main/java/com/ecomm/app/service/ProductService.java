@@ -2,6 +2,7 @@ package com.ecomm.app.service;
 
 import com.ecomm.app.converters.ProductConverter;
 import com.ecomm.app.dto.ProductDTO;
+import com.ecomm.app.exception.ProductNotFoundException;
 import com.ecomm.app.model.Product;
 import com.ecomm.app.repository.IProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +23,13 @@ public class ProductService implements IService<ProductDTO> {
     }
 
     @Override
-    public ProductDTO findById(long id) {
-        return  productRepository.findById(id).stream()
-                .map(product -> ProductConverter.entityToDTO(product))
-                .findFirst()
-                .get();
+    public ProductDTO findById(long id) throws ProductNotFoundException {
+        Product product=productRepository.findById(id).orElse(null);
+        if(product!=null){
+            return ProductConverter.entityToDTO(product);
+        }
+        else
+            throw new ProductNotFoundException("Product does not exist with id: "+id);
     }
     @Override
     public boolean save(ProductDTO productDTO) {
@@ -38,8 +41,13 @@ public class ProductService implements IService<ProductDTO> {
     }
 
     @Override
-    public boolean delete(long id) {
-        productRepository.deleteById(id);
-        return true;
+    public boolean delete(long id) throws ProductNotFoundException {
+        Product product=productRepository.findById(id).orElse(null);
+        if(product!=null){
+            productRepository.delete(product);
+            return true;
+        }
+        else
+            throw new ProductNotFoundException("Product does not exist to delete");
     }
 }
