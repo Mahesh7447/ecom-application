@@ -1,6 +1,7 @@
 package com.ecomm.app.controller;
 
 import com.ecomm.app.dto.ProductDTO;
+import com.ecomm.app.exception.ProductNotFoundException;
 import com.ecomm.app.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class ProductController {
     }
 
     @GetMapping("{id}")
-    public ProductDTO findById(@PathVariable long id) {
+    public ProductDTO findById(@PathVariable long id) throws ProductNotFoundException {
         return productService.findById(id);
     }
 
@@ -29,7 +30,7 @@ public class ProductController {
     }
 
     @DeleteMapping("{id}")
-    public boolean delete(@PathVariable long id) {
+    public boolean delete(@PathVariable long id) throws ProductNotFoundException {
         return productService.delete(id);
     }
 }
