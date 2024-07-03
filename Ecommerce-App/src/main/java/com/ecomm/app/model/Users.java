@@ -24,6 +24,5 @@ public class Users {
     private String state;
     private String zip;
     private String password;
-    @Transient
-    private List<String> roles;
+    private String roles;
 }

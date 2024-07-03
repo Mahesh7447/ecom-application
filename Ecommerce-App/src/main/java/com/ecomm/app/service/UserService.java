@@ -5,6 +5,7 @@ import com.ecomm.app.dto.UserDTO;
 import com.ecomm.app.model.Users;
 import com.ecomm.app.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,9 +15,11 @@ import java.util.stream.Collectors;
 public class UserService {
     @Autowired
     IUserRepository userRepository;
-
+    @Autowired
+    PasswordEncoder passwordEncoder;
     public boolean save(UserDTO userDTO) {
         if (userDTO != null) {
+            userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
             userRepository.save(UserConverter.dtoToEntity(userDTO));
             return true;
         }
@@ -30,8 +33,8 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public UserDTO findByFirstName(String firstName){
-        Users users =userRepository.findByFirstName(firstName);
+    public UserDTO findByEmail(String email){
+        Users users =userRepository.findByEmail(email);
         return UserConverter.entityToDTO(users);
     }
 }
